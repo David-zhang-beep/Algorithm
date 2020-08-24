@@ -1,0 +1,144 @@
+//Prim算法   
+#include<cstdio>
+#include<string>
+#include<queue>
+#include<algorithm>
+#define MAX_N 1001  //定义顶点的最大数量
+using namespace std;
+//定义边的结构体
+struct edge {
+	int to;
+	long long cost;
+  //自定义带参构造函数
+	edge(int tt,long long cc):to(tt),cost(cc){}
+	edge() {}
+  //重载<运算符，方便在队列进行排序
+	bool operator<(const edge&a) const{
+		return a.cost < cost;
+	}
+};
+
+priority_queue<edge> Que;
+vector<edge> G[MAX_N];
+bool Vis[MAX_N];
+int N, M;
+//Prim算法
+long long Prim() {
+	Vis[1] = 1;
+	long long res = 0;
+
+	for (int i = 0; i < G[1].size(); i++) {
+		Que.push(G[1][i]);
+	}
+	while (Que.size()) {
+		edge e = Que.top();
+		Que.pop();
+		if (Vis[e.to])continue;
+		Vis[e.to] = 1;
+		res += e.cost;
+		for (int i = 0; i < G[e.to].size(); i++) {
+			Que.push(G[e.to][i]);
+		}
+	}
+	return res;
+}
+int main() {
+	while (scanf_s("%d%d", &M, &N) == 2) {
+		if (M == 0)break;;
+		for (int i = 0; i <= N; i++) {
+			G[i].clear();
+		}
+		while (!Que.empty()) Que.pop();
+		memset(Vis, 0, sizeof(Vis));
+		for (int i = 1; i <= M; i++) {
+			int u, v;
+			long long cost;
+			scanf_s("%d%d%lld", &u, &v,&cost);
+			G[u].push_back(edge(v, cost));
+			G[v].push_back(edge(u, cost));
+		}
+		long long res = Prim();
+    //如果存在为包含的顶点则表示不存在最小生成树
+		for (int i = 0; i <= N; i++) {
+			if (!Vis[i])res = -1;
+		}
+		if (res == -1)printf("?\n");
+		else {
+			printf("%lld\n", res);
+		}
+	}
+	return 0;
+}
+//Kruscal 算法
+#include<iostream>
+#include<vector>
+#include<cstdio>
+#include<string>
+#include<algorithm>
+using namespace std;
+#define MAX_N 1000
+//定义边的结构体
+struct edge{
+	int from;
+	int to;
+	long long cost;
+}E[MAX_N*MAX_N];
+//定义cmp函数，用于sort排序
+bool cmp(edge a, edge b) {
+	return a.cost < b.cost;
+}
+int N, M;
+//标准并查集构建步骤
+int father[MAX_N];
+void init() {
+	for (int i = 0; i < MAX_N; i++) {
+		father[i] = i;
+	}
+}
+int find(int x) {
+	if (x = father[x])return x;
+	return father[x] = find(father[x]);
+}
+bool same(int x, int y) {
+	int nx = find(x);
+	int ny = find(y);
+	return nx == ny;
+}
+void unite(int x, int y) {
+	int nx = find(x);
+	int ny = find(y);
+	if (nx == ny)return;
+	father[nx] = ny;
+}
+
+//Kruscal算法
+long long Kruscal() {
+	sort(E + 1, E + 1 + M,cmp);
+	long long res = 0;
+	for (int i = 1; i <= M; i++) {
+		if (same(E[i].from, E[i].to))continue;
+		unite(E[i].from, E[i].to);
+		res += E[i].cost;
+	}
+	return res;
+}
+int main() {
+	while (scanf_s("%d%d", &N, &M) == 2) {
+		if (M == 0)break;
+		init();
+		for (int i = 1; i <= M; i++) {
+			scanf_s("%d%d%lld", &E[i].from, &E[i].to, &E[i].cost);
+		}
+			long long  res = Kruscal();
+			for (int i = 1; i <= M; i++) {
+				if (!same(i, 1)) {
+					res = -1;
+				}
+			}
+			if (res == -1)printf("?\n");
+			else {
+				printf("%lld\n", res);
+			}
+		}
+	return 0;
+}
