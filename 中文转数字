@@ -1,0 +1,61 @@
+
+@version 1.0
+@date 2020.8.28
+@author zhang
+
+
+
+#include<iostream>
+#include<vector>
+#include<map>
+#include<unordered_map>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+
+long Reverse(string s) {
+	long res = 0;
+	unordered_map<string, long> Mapn;
+	Mapn["零"] = 0;
+	Mapn["一"] = 1;
+	Mapn["二"] = 2;
+	Mapn["三"] = 3;
+	Mapn["四"] = 4;
+	Mapn["五"] = 5;
+	Mapn["六"] = 6;
+	Mapn["七"] = 7;
+	Mapn["八"] = 8;
+	Mapn["九"] = 9;
+	unordered_map<string, long> Mapl;
+	Mapl["十"] = (long)10;
+	Mapl["百"] = (long)100;
+	Mapl["千"] = (long)1000;
+	Mapl["万"] = (long)10000;
+	Mapl["亿"] = (long)100000000;
+	long temp = 0;
+	for (int i = 0; i < s.size(); i+=2) {
+		if (s.substr(i, 2).compare("亿") == 0|| s.substr(i, 2).compare("万") == 0) {
+			res += Mapl[s.substr(i, 2)] * temp;
+			temp = 0;
+		}
+		if (Mapn.count(s.substr(i,2))) {
+			if (s.substr(i,2).compare("零")==0)continue;
+			if (i + 2 < s.size() && Mapl.count(s.substr(i+2,2))&& s.substr(i + 2, 2).compare("万")!=0&& s.substr(i + 2, 2).compare("亿") != 0) {
+				temp += Mapn[s.substr(i, 2)] * Mapl[s.substr(i + 2, 2)];
+			}
+			else {
+				temp += Mapn[s.substr(i, 2)];
+			}
+		}
+	}
+	return res+temp;
+}
+int main() {
+	string s = "一亿三千二百零五万零五百二十五";
+	
+  long res = Reverse(s);
+	
+	cout << res;
+	return 0;
+}
