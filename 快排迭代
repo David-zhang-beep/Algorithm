@@ -1,0 +1,52 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<stack>
+using namespace std;
+void QuickSort(vector<int> &nums) {
+	int n = nums.size();
+	int start = 0;
+	int end = n - 1;
+	stack<int> S;
+	S.push(0);
+	S.push(n - 1);
+	while (!S.empty()) {
+		end = S.top();
+		S.pop();
+		start = S.top();
+		S.pop();
+		if (start < end) {
+			int i = start;
+			int j = end;
+			int povit = nums[start];
+			while (i < j) {
+				while (i < j&&nums[j] >= povit) {
+					j--;
+				}
+				nums[i] = nums[j];
+				while (i < j&&nums[i] <= povit) {
+					i++;
+				}
+				nums[j] = nums[i];
+			}
+			nums[i] = povit;
+			if (start < i - 1) {
+				S.push(start);
+				S.push(i - 1);
+			}
+			if (end > i + 1) {
+				S.push(i + 1);
+				S.push(end);
+			}
+			
+		}
+	}
+}
+int main() {
+	vector<int> nums = { 17,23,4,45,24,67,1,2 };
+	QuickSort(nums);
+	for (int i = 0; i < nums.size(); i++) {
+		cout << nums[i] << " ";
+	}
+	return 0;
+}
