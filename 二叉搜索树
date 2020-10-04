@@ -1,0 +1,25 @@
+//寻找data值大于target的最小的结点
+Node* Get(Node* root, int target) {
+	Node * cur = root;
+	Node * ceiling = nullptr;
+	while (cur) {
+		if (cur->data <= target) {
+			cur = cur->right;
+		}
+		else {
+			ceiling = cur;
+			cur = cur->left;
+		}
+	}
+	return ceiling;
+}
+Node* Get1(Node* root, int target) {
+	if (root == nullptr)return nullptr;
+	if (root->data <= target) {
+		Get1(root->right, target);
+	}
+	else {
+		Node* ceiling = Get1(root->left,target);
+		return ceiling ? ceiling : root;
+	}
+}
